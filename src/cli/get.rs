@@ -49,7 +49,6 @@ impl Get {
                 .download(&self.destination, &endpoint)
                 .await
                 .with_context(|| format!("Failed downloading '{}'", &file.name))?;
-
         }
 
         eprintln!("Finished fetching files");
