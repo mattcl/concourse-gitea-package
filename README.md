@@ -5,7 +5,7 @@ pagination when checking for resource versions.
 
 ## Known issues
 
-- [] Does not follow pagination links when checking for resources.
+- [ ] Does not follow pagination links when checking for resources.
 
 ## Installing
 
