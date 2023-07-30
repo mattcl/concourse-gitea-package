@@ -1,12 +1,14 @@
-use std::path::PathBuf;
+use std::{collections::HashSet, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use clap::Args;
 use clap_stdin::FileOrStdin;
+use gen_api_wrapper::query::AsyncQuery;
 
 use crate::{
     client::GiteaClient,
-    endpoints::PackageUploadEndpoint,
+    endpoints::{PackageFilesEndpoint, PackageUploadEndpoint},
+    models::PackageFile,
     params::{OutOutput, OutParams, Version},
 };
 
@@ -24,6 +26,21 @@ impl Out {
             bail!("Must specify at least one file to upload");
         }
 
+        // see if we have files that already exist for the specified version
+        let endpoint = PackageFilesEndpoint::buidler()
+            .owner(&self.params.source.owner)
+            .package(&self.params.source.package)
+            .version(&self.params.params.version)
+            .build()?;
+
+        // TODO: This could fail for just connectivity reasons, but gitea will
+        // prevent the overwrite anyway - MCL - 2023-07-30
+        let existing_files: Vec<PackageFile> =
+            endpoint.query_async(&client).await.ok().unwrap_or_default();
+
+        let existing_names: HashSet<&String> =
+            HashSet::from_iter(existing_files.iter().map(|f| &f.name));
+
         for file in self.params.params.files.iter() {
             let filename = file
                 .file_name()
@@ -34,6 +51,14 @@ impl Out {
                     )
                 })?
                 .to_string_lossy();
+
+            if existing_names.contains(&filename.to_string()) {
+                eprintln!(
+                    "Skipping '{}' because it already exists for version {}",
+                    filename, &self.params.params.version
+                );
+                continue;
+            }
 
             eprintln!("Uploading {}", filename);
 

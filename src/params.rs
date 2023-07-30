@@ -76,8 +76,6 @@ impl FromStr for GetParams {
 
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct OutStepParams {
-    #[serde(default)]
-    pub skip_if_exists: bool,
     pub version: String,
     pub files: Vec<PathBuf>,
 }
