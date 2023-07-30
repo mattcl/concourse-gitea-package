@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
 use clap::Args;
 use clap_stdin::FileOrStdin;
 
@@ -25,18 +25,31 @@ impl Out {
         }
 
         for file in self.params.params.files.iter() {
-            eprintln!("Uploading {}", file);
+            let filename = file
+                .file_name()
+                .ok_or_else(|| {
+                    anyhow!(
+                        "Could not determine basename for {}",
+                        file.to_string_lossy()
+                    )
+                })?
+                .to_string_lossy();
+
+            eprintln!("Uploading {}", filename);
 
             let endpoint = PackageUploadEndpoint::buidler()
                 .owner(&self.params.source.owner)
                 .package(&self.params.source.package)
                 .version(&self.params.params.version)
-                .file(file)
+                .file(filename)
                 .build()?;
 
             let target = self.sources.join(file);
             if !target.is_file() {
-                bail!("File '{}' is not a file or does not exist", file);
+                bail!(
+                    "File '{}' is not a file or does not exist",
+                    file.to_string_lossy()
+                );
             }
 
             client.upload(&target, &endpoint).await?;

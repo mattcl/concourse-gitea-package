@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{path::PathBuf, str::FromStr};
 
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
@@ -79,7 +79,7 @@ pub struct OutStepParams {
     #[serde(default)]
     pub skip_if_exists: bool,
     pub version: String,
-    pub files: Vec<String>,
+    pub files: Vec<PathBuf>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
