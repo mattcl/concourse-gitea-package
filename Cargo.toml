@@ -1,0 +1,34 @@
+[package]
+name = "concourse-gitea-package"
+version = "0.1.0"
+edition = "2021"
+authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
+rust-version = "1.66.1"
+description = "A concourse resource for gitea generic packages"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "gitea-package"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = "1.0.71"
+async-trait = "0.1.71"
+bytes = "^1"
+clap = { version = "4.3", features = ["cargo", "derive", "env"] }
+clap-stdin = "0.2.1"
+derive_builder = "0.12"
+futures-util = "0.3.21"
+gen-api-wrapper = "0.1.1"
+http = "~0.2"
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls", "stream"] }
+serde = { version = "1.0.139", features = ["derive"] }
+serde_json = "1.0.2"
+tokio = { version = "1.25", features = ["full"] }
+tokio-util = { version = "0.7.8", features = ["codec"] }
+thiserror = "1.0.40"
+url = { version = "^2.4", features = ["serde"] }
+
+[dev-dependencies]
+assert_cmd = "2.0.12"

@@ -1,0 +1,5 @@
+bin:
+  name: concourse-gitea-package
+  repo:
+    uri: https://github.com/mattcl/concourse-gitea-package.git
+  image-repo: mattcl/concourse-gitea-package

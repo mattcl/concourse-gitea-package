@@ -1,0 +1,4 @@
+Error: Could not fetch completed tasks
+
+Caused by:
+    Failed to load tasks: Output { status: ExitStatus(unix_wait_status(512)), stdout: "", stderr: "Configuration override rc.json.array=on\nConfiguration override rc.confirmation=off\nMismatched parentheses in expression\n" }
