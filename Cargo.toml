@@ -1,9 +1,9 @@
 [package]
 name = "concourse-gitea-package"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
-rust-version = "1.66.1"
+rust-version = "1.70.0"
 description = "A concourse resource for gitea generic packages"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
