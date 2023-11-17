@@ -1,4 +1,4 @@
-FROM rust:1.73-alpine as release
+FROM rust:1.74-alpine as release
 
 RUN apk add musl-dev
 
