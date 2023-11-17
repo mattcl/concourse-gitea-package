@@ -144,7 +144,7 @@ impl GiteaClient {
         let rsp = self.client.execute(request).await?;
 
         // we're going to do this in chunks
-        let target = destination.join(&endpoint.file.to_string());
+        let target = destination.join(endpoint.file.to_string());
         let mut file = File::create(&target)
             .with_context(|| format!("Failed to create file '{}'", &target.to_string_lossy()))?;
 
