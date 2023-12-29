@@ -20,18 +20,19 @@ pub struct Get {
 
 impl Get {
     pub async fn run(&self) -> Result<()> {
-        let client = GiteaClient::try_from(&self.params.source)?;
+        let params = self.params.clone().into_inner();
+        let client = GiteaClient::try_from(&params.source)?;
 
         let endpoint = PackageFilesEndpoint::buidler()
-            .owner(&self.params.source.owner)
-            .package(&self.params.source.package)
-            .version(&self.params.version.version)
+            .owner(&params.source.owner)
+            .package(&params.source.package)
+            .version(&params.version.version)
             .build()?;
 
         let files: Vec<PackageFile> = endpoint.query_async(&client).await.with_context(|| {
             format!(
                 "Could not find files for '{}' at '{}'",
-                &self.params.source.package, &self.params.version.version
+                &params.source.package, &self.params.version.version
             )
         })?;
 
@@ -39,9 +40,9 @@ impl Get {
         for file in files {
             eprintln!("Fetching {}", &file.name);
             let endpoint = PackageFileEndpoint::buidler()
-                .owner(&self.params.source.owner)
-                .package(&self.params.source.package)
-                .version(&self.params.version.version)
+                .owner(&params.source.owner)
+                .package(&params.source.package)
+                .version(&params.version.version)
                 .file(&file.name)
                 .build()?;
 

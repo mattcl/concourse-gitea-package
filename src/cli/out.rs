@@ -20,7 +20,8 @@ pub struct Out {
 
 impl Out {
     pub async fn run(&self) -> Result<()> {
-        let client = GiteaClient::try_from(&self.params.source)?;
+        let params = self.params.clone().into_inner();
+        let client = GiteaClient::try_from(&params.source)?;
 
         if self.params.params.files.is_empty() {
             bail!("Must specify at least one file to upload");
@@ -28,9 +29,9 @@ impl Out {
 
         // see if we have files that already exist for the specified version
         let endpoint = PackageFilesEndpoint::buidler()
-            .owner(&self.params.source.owner)
-            .package(&self.params.source.package)
-            .version(&self.params.params.version)
+            .owner(&params.source.owner)
+            .package(&params.source.package)
+            .version(&params.params.version)
             .build()?;
 
         // TODO: This could fail for just connectivity reasons, but gitea will
@@ -63,9 +64,9 @@ impl Out {
             eprintln!("Uploading {}", filename);
 
             let endpoint = PackageUploadEndpoint::buidler()
-                .owner(&self.params.source.owner)
-                .package(&self.params.source.package)
-                .version(&self.params.params.version)
+                .owner(&params.source.owner)
+                .package(&params.source.package)
+                .version(&params.params.version)
                 .file(filename)
                 .build()?;
 

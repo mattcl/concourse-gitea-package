@@ -17,11 +17,12 @@ pub struct Check {
 
 impl Check {
     pub async fn run(&self) -> Result<()> {
-        let client = GiteaClient::try_from(&self.params.source)?;
+        let params = self.params.clone().into_inner();
+        let client = GiteaClient::try_from(&params.source)?;
 
         let endpoint = PackagesEndpoint::buidler()
-            .owner(&self.params.source.owner)
-            .package(&self.params.source.package)
+            .owner(&params.source.owner)
+            .package(&params.source.package)
             .build()?;
 
         let mut packages: Vec<Package> = endpoint.query_async(&client).await?;
@@ -33,9 +34,9 @@ impl Check {
         // We have to filter because the query param matches substrings.
         // TODO: see if there's an actual syntax to have the query be an exact
         // match so we don't have to filter this out. - MCL - 2023-07-29
-        packages.retain(|p| p.name == self.params.source.package);
+        packages.retain(|p| p.name == params.source.package);
 
-        if let Some(ref previous) = self.params.version {
+        if let Some(ref previous) = params.version {
             let pos = packages.iter().position(|p| p.version == previous.version);
             if let Some(pos) = pos {
                 let cutoff_id = packages[pos].id;
